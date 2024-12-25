@@ -24,7 +24,7 @@
                             <p class="card-text">
                                 <small class="text-muted">Category: {{ $article->category->name ?? 'Uncategorized' }}</small>
                             </p>
-                            <a href="#" class="btn btn-primary">Read More</a>
+                            <a href="{{ route('articles.show', $article)  }}" class="btn btn-primary">Read More</a>
                         </div>
                     </div>
                 </div>
