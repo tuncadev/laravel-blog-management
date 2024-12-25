@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArticleController;
-
+use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,5 +23,10 @@ Route::resource('articles', ArticleController::class);
 Auth::routes();
 
 Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
+
+Route::resource('articles', ArticleController::class);
+
+// Nested routes for comments
+Route::resource('articles.comments', CommentController::class)->shallow();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

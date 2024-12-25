@@ -85,7 +85,8 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::where('id', $id)->first() ?? null;
+        $article = Article::with('comments')->findOrFail($id);
+        
         return view('articles.show', compact('article'));
     }
 
