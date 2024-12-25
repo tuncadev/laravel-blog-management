@@ -28,7 +28,11 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        if (auth()->check()) {
+            return view('categories.create');
+        } else {
+            return view('auth.login');
+        }
     }
     
 

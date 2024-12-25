@@ -14,7 +14,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {   
         $query = Article::with('category');
 
         if ($request->has('search') && $request->search) {
@@ -47,8 +47,13 @@ class ArticleController extends Controller
      */
     public function create()
     {
+        if (auth()->check()) {
+            $categories = Category::all();
+            return view('articles.create', compact('categories'));
+        } else {      
         $categories = Category::all();
-        return view('articles.create', compact('categories'));
+            return view('auth.login');
+        }
     }
     
 

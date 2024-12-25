@@ -22,6 +22,24 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('articles.index') }}">Articles</a>
                     </li>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">{{ auth()->user()->name }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-link nav-link">Logout</button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">Register</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </div>

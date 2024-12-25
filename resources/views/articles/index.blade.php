@@ -30,14 +30,20 @@
                 <td>{{ $article->id }}</td>
                 <td>{{ $article->title }}</td>
                 <td>{{ $article->category->name ?? 'Uncategorized' }}</td>
-                <td>
-                    <a href="{{ route('articles.edit', $article) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('articles.destroy', $article) }}" method="POST" style="display: inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
-                </td>
+                @auth
+                    <td>
+                        <a href="{{ route('articles.edit', $article) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('articles.destroy', $article) }}" method="POST" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </td>
+                @else
+                    <td>
+                        <a class="btn btn-warning btn-sm" href="{{ route('login') }}">Login for actions</a>
+                    </td>
+                @endauth
             </tr>
             @endforeach
         </tbody>
