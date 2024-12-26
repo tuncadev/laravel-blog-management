@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
@@ -16,17 +16,16 @@ use App\Http\Controllers\CommentController;
 |
 */
 
-Route::get('/', [ArticleController::class, 'homepage'])->name('homepage');
-
-Route::resource('categories', CategoryController::class);
-Route::resource('articles', ArticleController::class);
 Auth::routes();
 
-Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
+Route::get('/', [PostController::class, 'homepage'])->name('homepage');
 
-Route::resource('articles', ArticleController::class);
+Route::resource('categories', CategoryController::class);
 
-// Nested routes for comments
-Route::resource('articles.comments', CommentController::class)->shallow();
+Route::resource('posts', PostController::class);
+
+Route::resource('posts.comments', CommentController::class)->shallow();
+
+Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

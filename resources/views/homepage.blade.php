@@ -2,29 +2,29 @@
 
 @section('content')
 <div class="container">
-    <h1>Latest Articles</h1>
+    <h1>Latest Posts</h1>
 
-    @if ($articles->count())
+    @if ($posts->count())
         <form action="{{ route('homepage') }}" method="GET" class="mb-4">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search articles..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Search posts..." value="{{ request('search') }}">
                 <button class="btn btn-primary" type="submit">Search</button>
             </div>
         </form>
 
         <div class="row">
-            @foreach ($articles as $article)
+            @foreach ($posts as $post)
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $article->title }}</h5>
+                            <h5 class="card-title">{{ $post->title }}</h5>
                             <p class="card-text">
-                                {{ Str::limit($article->content, 100) }} <!-- Limit content preview -->
+                                {{ Str::limit($post->content, 100) }} <!-- Limit content preview -->
                             </p>
                             <p class="card-text">
-                                <small class="text-muted">Category: {{ $article->category->name ?? 'Uncategorized' }}</small>
+                                <small class="text-muted">Category: {{ $post->category->name ?? 'Uncategorized' }}</small>
                             </p>
-                            <a href="{{ route('articles.show', $article)  }}" class="btn btn-primary">Read More</a>
+                            <a href="{{ route('posts.show', $post)  }}" class="btn btn-primary">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -33,10 +33,10 @@
 
         <!-- Pagination Links -->
         <div class="mt-4">
-            {{ $articles->links() }}
+            {{ $posts->links() }}
         </div>
     @else
-        <p>No articles available.</p>
+        <p>No posts available.</p>
     @endif
 </div>
 @endsection

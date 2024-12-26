@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Article;
+use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
 /*
@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //
 Route::get('/posts', function () {
     // Retrieve all articles
-    $articles = Article::all();
+    $articles = Post::all();
 
     // Return as JSON
     return response()->json($articles, 200);
@@ -35,7 +35,7 @@ Route::get('/posts', function () {
 //
 Route::get('/posts/{id}', function ($id) {
     // Retrieve article by ID, including related comments if desired
-    $article = Article::with('comment')->findOrFail($id);
+    $article = Post::with('comment')->findOrFail($id);
 
 
     // Return as JSON
@@ -43,34 +43,45 @@ Route::get('/posts/{id}', function ($id) {
 });
 
 //
-// 3. POST /api/posts/{id}/comments — Add a comment.
-//
-Route::post('/posts/{id}/comments', function (Request $request, $id) {
-    // Validate incoming data
-    $validatedData = $request->validate([
-        'content' => 'required|string',
-    ]);
+Route::middleware(['auth:sanctum'])->group( function() {
 
-    // Find the article
-    $article = Article::findOrFail($id);
+    // Protected routes
 
-    // Create the comment in the database
-    $comment = new Comment();
-    $comment->post_id = $article->id;
-    $comment->content = $validatedData['content'];
-    // If you have user relationships, you might also set $comment->user_id
-    $comment->save();
 
-    // Return success message
-    return response()->json([
-        'message' => 'Comment added successfully.',
-        'comment' => $comment
-    ], 201);
+    // 3. POST /api/posts/{id}/comments — Add a comment.
+
+    Route::post('/posts/{id}/comments', function (Request $request, $id) {
+        // Validate incoming data
+        $validatedData = $request->validate([
+            'content' => 'required|string',
+        ]);
+    
+        // Find the article
+        $article = Post::findOrFail($id);
+    
+        // Create the comment in the database
+        $comment = new Comment();
+        $comment->post_id = $article->id;
+        $comment->content = $validatedData['content'];
+        // If you have user relationships, you might also set $comment->user_id
+        $comment->save();
+    
+        // Return success message
+        return response()->json([
+            'message' => 'Comment added successfully.',
+            'comment' => $comment
+        ], 201);
+    });
+    
+    //
+
 });
 
-//
+
+
 // 4. POST /api/login — Authorization and obtaining an API token.
 //
+
 Route::post('/login', function (Request $request) {
     // Validate the login credentials
     $credentials = $request->validate([
@@ -78,23 +89,29 @@ Route::post('/login', function (Request $request) {
         'password' => 'required|string',
     ]);
 
-    // Attempt to find user by email
-    $user = User::where('email', $credentials['email'])->first();
-
-    // Check the user's existence and verify the password
-    if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+    // Attempt login
+    if (!Auth::attempt($credentials)) {
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
-    // In a real application, you might generate a token (e.g., via Sanctum/JWT)
-    // For simplicity, let’s just store a random token on the user record
-    $token = Str::random(60);
-    $user->api_token = hash('sha256', $token);
-    $user->save();
+    // Get the authenticated user
+    $user = Auth::user();
 
+    // Generate a Sanctum token
+    $token = $user->createToken('api-token')->plainTextToken;
+    $user->api_token = $token;
+    $user->update();
     // Return the token in the response
     return response()->json([
         'message' => 'Login successful',
-        'token'   => $token
+        'token'   => $token,
     ], 200);
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/debug', function (Request $request) {
+        return response()->json([
+            'user' => $request->user(),
+        ]);
+    });
 });

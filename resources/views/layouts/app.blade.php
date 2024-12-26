@@ -20,7 +20,7 @@
                         <a class="nav-link" href="{{ route('categories.index') }}">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('articles.index') }}">Articles</a>
+                        <a class="nav-link" href="{{ route('posts.index') }}">Posts</a>
                     </li>
                     @auth
                         <li class="nav-item">

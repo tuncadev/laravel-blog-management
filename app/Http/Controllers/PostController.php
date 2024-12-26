@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Models\Article;
+use App\Models\Post;
 
-class ArticleController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,29 +15,29 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {   
-        $query = Article::with('category');
+        $query = Post::with('category');
 
         if ($request->has('search') && $request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
     
-        $articles = $query->paginate(10);
+        $posts = $query->paginate(10);
     
-        return view('articles.index', compact('articles'));
+        return view('posts.index', compact('posts'));
     }
     
 
     public function homepage(Request $request)
     {
-        $query = Article::with('category');
+        $query = Post::with('category');
 
         if ($request->has('search') && $request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
     
-        $articles = $query->latest()->paginate(10);
+        $posts = $query->latest()->paginate(10);
     
-        return view('homepage', compact('articles'));
+        return view('homepage', compact('posts'));
     }
 
     /**
@@ -49,7 +49,7 @@ class ArticleController extends Controller
     {
         if (auth()->check()) {
             $categories = Category::all();
-            return view('articles.create', compact('categories'));
+            return view('posts.create', compact('categories'));
         } else {      
         $categories = Category::all();
             return view('auth.login');
@@ -71,9 +71,9 @@ class ArticleController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
     
-        Article::create($request->all());
+        Post::create($request->all());
     
-        return redirect()->route('articles.index')->with('success', 'Article created successfully.');
+        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
     
 
@@ -85,9 +85,9 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::with('comments')->findOrFail($id);
+        $post = Post::with('comments')->findOrFail($id);
         
-        return view('articles.show', compact('article'));
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -96,10 +96,10 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Article $article)
+    public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('articles.edit', compact('article', 'categories'));
+        return view('posts.edit', compact('post', 'categories'));
     }
     
 
@@ -110,7 +110,7 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Post $post)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -118,9 +118,9 @@ class ArticleController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
     
-        $article->update($request->all());
+        $post->update($request->all());
     
-        return redirect()->route('articles.index')->with('success', 'Article updated successfully.');
+        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
     
 
@@ -130,11 +130,11 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy(Post $post)
     {
-        $article->delete();
+        $post->delete();
     
-        return redirect()->route('articles.index')->with('success', 'Article deleted successfully.');
+        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }
     
 }

@@ -13,7 +13,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = Comment::with('article')->latest()->paginate(10);
+        $comments = Comment::with('post')->latest()->paginate(10);
         return view('comments.index', compact('comments'));
     }
     
@@ -25,7 +25,7 @@ class CommentController extends Controller
      */
     public function create()
     {
-        return redirect()->route('articles.index');
+        return redirect()->route('posts.index');
     }
     
 
@@ -43,10 +43,10 @@ class CommentController extends Controller
     
         Comment::create([
             'content' => $request->content,
-            'post_id' => $articleId, // Assuming 'post_id' links to 'articles'
+            'post_id' => $articleId, // Assuming 'post_id' links to 'posts'
         ]);
     
-        return redirect()->route('articles.show', $articleId)
+        return redirect()->route('posts.show', $articleId)
                          ->with('success', 'Comment added successfully.');
     }
     
@@ -91,7 +91,7 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
     
-        return redirect()->route('articles.show', $comment->post_id)
+        return redirect()->route('posts.show', $comment->post_id)
                          ->with('success', 'Comment updated successfully.');
     }
     
@@ -103,10 +103,10 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        $articleId = $comment->post_id; // Save article ID for redirection
+        $articleId = $comment->post_id; // Save post ID for redirection
         $comment->delete();
     
-        return redirect()->route('articles.show', $articleId)
+        return redirect()->route('posts.show', $articleId)
                          ->with('success', 'Comment deleted successfully.');
     }
     
