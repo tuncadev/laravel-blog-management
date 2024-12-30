@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Models\Category;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,4 +29,15 @@ Route::resource('posts.comments', CommentController::class)->shallow();
 
 Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
 
+
+
+if (app()->environment('testing')) {
+    Route::get('category/{id}', function ($id) {
+        $category = Category::findOrFail($id);
+
+        return response()->json($category, 200);
+    });
+}
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

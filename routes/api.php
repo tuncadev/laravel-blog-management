@@ -34,8 +34,9 @@ Route::get('/posts', function () {
 // 2. GET /api/posts/{id} — Detailed information about an article.
 //
 Route::get('/posts/{id}', function ($id) {
+    
     // Retrieve article by ID, including related comments if desired
-    $article = Post::with('comment')->findOrFail($id);
+    $article = Post::with('comments')->findOrFail($id);
 
 
     // Return as JSON
